@@ -369,4 +369,24 @@ buster.testCase('batch()', {
             }
         }
     }
+
+  , 'chained batch() encoding=json': {
+        'run it all': function (done) {
+          this.openTestDatabase({valueEncoding: 'json'}, function (db) {
+            this.db = db
+            this.batch = db.batch()
+            this.batch.put('fooJ', {foo: 'bar'}).write(function (err) {
+              refute(err)
+
+              db.get('fooJ', function (err2, value) {
+                refute(err2)
+                refute.isNull(value)
+                console.log(value)
+
+                db.del('jiggy', done)
+              })
+            })
+          }.bind(this))
+        }
+    }
 })
